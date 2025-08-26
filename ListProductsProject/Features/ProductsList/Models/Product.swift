@@ -21,3 +21,11 @@ struct ProductRating: Codable {
     let rate: Double
     let count: Int
 }
+
+
+struct Product {
+    let id: String
+    let name: String
+    let price: Double
+    let imageURL: String?
+}
