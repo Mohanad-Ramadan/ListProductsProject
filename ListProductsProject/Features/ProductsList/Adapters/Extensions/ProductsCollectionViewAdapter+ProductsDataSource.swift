@@ -9,13 +9,15 @@ import UIKit
 
 //MARK: - Data Management
 extension ProductsCollectionViewAdapter {
-    func updateProducts(_ products: [Product]) {
-        self.products = products
+    
+    func updateProducts(with products: [Product], isInitialLoad: Bool) {
+        if isInitialLoad {
+            self.products = products
+        } else {
+            self.products.append(contentsOf: products)
+        }
     }
     
-    func addProducts(_ newProducts: [Product]) {
-        self.products.append(contentsOf: newProducts)
-    }
 }
 
 //MARK: - DataSource Delegate

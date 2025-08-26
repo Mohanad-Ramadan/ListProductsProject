@@ -21,12 +21,23 @@ class ProductsListViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.backgroundColor = .systemGroupedBackground
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.alwaysBounceVertical = true
         return collectionView
     }()
     
+    private lazy var loadingIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+    
     private var productsCollectionViewManager = ProductsCollectionViewAdapter()
-
     private let apiProvider: APIProtocol = APIClient()
+    
+    private let productsPageCount = 7
+    private var isLoadingMore = false
+    private var hasMoreData = true
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -34,6 +45,7 @@ class ProductsListViewController: UIViewController {
         view.backgroundColor = .systemGroupedBackground
         setupNavigationBar()
         setupConstraints()
+        setupCollectionViewManager()
         setupCollectionView()
         setupNavigationBar()
         loadInitialProductsList()
@@ -55,17 +67,25 @@ class ProductsListViewController: UIViewController {
     
     private func setupConstraints() {
         view.addSubview(productsCollectionView)
+        view.addSubview(loadingIndicator)
         
         NSLayoutConstraint.activate([
             productsCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             productsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             productsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            productsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            productsCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingIndicator.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
     }
     
-    private func setupCollectionView() {
+    private func setupCollectionViewManager() {
         productsCollectionViewManager.collectionView = productsCollectionView
+        productsCollectionViewManager.delegate = self
+    }
+    
+    private func setupCollectionView() {
         productsCollectionView.dataSource = productsCollectionViewManager
         productsCollectionView.delegate = productsCollectionViewManager
         productsCollectionView.register(
@@ -76,16 +96,53 @@ class ProductsListViewController: UIViewController {
     
     // MARK: - Data Loading
     private func loadInitialProductsList() {
-        let endpoint = APIEndpoint.getProducts(limit: 7)
+        hasMoreData = true
+        loadProducts(isInitialLoad: true)
+    }
+    
+    private func loadProducts(isInitialLoad: Bool = false) {
+        guard !isLoadingMore && (isInitialLoad || hasMoreData) else { return }
+        
+        isLoadingMore = true
+        if !isInitialLoad {
+            loadingIndicator.startAnimating()
+        }
+        let endpoint = APIEndpoint.getProducts(limit: productsPageCount)
+        
         Task {
+            defer {
+                isLoadingMore = false
+                if !isInitialLoad {
+                    loadingIndicator.stopAnimating()
+                }
+            }
+            
             do {
                 let fetchedProducts = try await apiProvider.request(endpoint: endpoint, responseModel: [ProductModel].self)
                 let products = fetchedProducts.map { Product(from: $0) }
-                productsCollectionViewManager.updateProducts(products)
-                productsCollectionView.reloadData()
+                
+                productsCollectionViewManager.updateProducts(
+                    with: products,
+                    isInitialLoad: isInitialLoad
+                )
+                
+                self.hasMoreData = products.count == self.productsPageCount
+                
+                self.productsCollectionView.reloadData()
             } catch {
-                throw error
+                print("Error loading products: \(error)")
             }
+        }
+    }
+    
+}
+
+// MARK: - ProductsCollectionViewAdapterDelegate
+extension ProductsListViewController: ProductsCollectionViewAdapterDelegate {
+
+    func didReachEndOfScroll() {
+        if !isLoadingMore && hasMoreData {
+            loadProducts()
         }
     }
     

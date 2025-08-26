@@ -7,8 +7,13 @@
 
 import UIKit
 
+protocol ProductsCollectionViewAdapterDelegate: AnyObject {
+    func didReachEndOfScroll()
+}
+
 class ProductsCollectionViewAdapter: NSObject {
     var products: [Product] = []
-    var currentLayout: LayoutType = .grid
+    var currentLayout: LayoutType = .list
     weak var collectionView: UICollectionView?
+    weak var delegate: ProductsCollectionViewAdapterDelegate?
 }
