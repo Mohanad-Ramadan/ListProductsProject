@@ -10,6 +10,13 @@ import UIKit
 class ProductsListViewController: UIViewController {
     
     // MARK: Properties
+    private lazy var switchLayoutButton = UIBarButtonItem(
+        image: UIImage(systemName: "square.grid.2x2"),
+        style: .plain,
+        target: self,
+        action: #selector(toggleLayout)
+    )
+    
     private lazy var productsCollectionView : UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.backgroundColor = .systemGroupedBackground
@@ -23,28 +30,26 @@ class ProductsListViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
+        view.backgroundColor = .systemGroupedBackground
+        setupNavigationBar()
         setupConstraints()
         setupCollectionView()
-        setupCollectionViewLayout()
+        setupNavigationBar()
         loadInitialProductsList()
     }
     
-    
-    // MARK: - Setup View
-    private func setupView() {
+    // MARK: - Setup Views
+    private func setupNavigationBar() {
         title = "Products:"
-        view.backgroundColor = .systemGroupedBackground
+        navigationItem.rightBarButtonItem = switchLayoutButton
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     
-    private func setupCollectionViewLayout() {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 10
-        layout.minimumInteritemSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        productsCollectionView.setCollectionViewLayout(layout, animated: false)
+    @objc private func toggleLayout() {
+        productsCollectionViewManager.switchLayout()
+        let currentLayout = productsCollectionViewManager.currentLayout
+        let buttonImage = currentLayout == .grid ? "list.bullet" : "square.grid.2x2"
+        navigationItem.rightBarButtonItem?.image = UIImage(systemName: buttonImage)
     }
     
     private func setupConstraints() {
@@ -59,6 +64,7 @@ class ProductsListViewController: UIViewController {
     }
     
     private func setupCollectionView() {
+        productsCollectionViewManager.collectionView = productsCollectionView
         productsCollectionView.dataSource = productsCollectionViewManager
         productsCollectionView.delegate = productsCollectionViewManager
         productsCollectionView.register(
