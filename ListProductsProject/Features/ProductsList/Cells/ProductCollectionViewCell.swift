@@ -110,10 +110,9 @@ class ProductCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Setup Content
     func setupContent(with product: Product) {
-        nameLabel.text = product.name
+        nameLabel.text = product.title
         priceLabel.text = String(format: "$%.2f", product.price)
         productImageView.image = UIImage(systemName: "photo")
-        productImageView.tintColor = .systemGray3
     }
     
 }
