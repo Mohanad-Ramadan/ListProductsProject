@@ -119,9 +119,3 @@ class ProductCollectionViewCell: UICollectionViewCell {
     
 }
 
-struct Product {
-    let id: String
-    let name: String
-    let price: Double
-    let imageURL: String?
-}
