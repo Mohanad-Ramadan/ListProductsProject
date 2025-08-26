@@ -26,6 +26,7 @@ class ProductsListViewController: UIViewController {
     
     private var productsCollectionViewManager = ProductsCollectionViewAdapter()
 
+    private let apiProvider: APIProtocol = APIClient()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -75,6 +76,14 @@ class ProductsListViewController: UIViewController {
     
     // MARK: - Data Loading
     private func loadInitialProductsList() {
+        let endpoint = APIEndpoint.getProducts(limit: 7)
+        Task {
+            do {
+                let _ = try await apiProvider.request(endpoint: endpoint, responseModel: [ProductModel].self)
+            } catch {
+                print(error)
+            }
+        }
         let sampleProducts = [
             Product(id: "1", name: "iPhone 15 Pro", price: 999.99, imageURL: nil),
             Product(id: "2", name: "MacBook Air M2", price: 1199.99, imageURL: nil),
