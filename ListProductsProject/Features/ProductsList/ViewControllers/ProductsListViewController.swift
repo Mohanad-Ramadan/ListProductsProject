@@ -35,6 +35,7 @@ class ProductsListViewController: UIViewController {
     private func setupView() {
         title = "Products:"
         view.backgroundColor = .systemGroupedBackground
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     private func setupCollectionViewLayout() {
