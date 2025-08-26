@@ -55,8 +55,8 @@ class ListProductsViewController: UIViewController {
         productsCollectionView.dataSource = self
         productsCollectionView.delegate = self
         productsCollectionView.register(
-            UICollectionViewCell.self,
-            forCellWithReuseIdentifier: "cell"
+            ProductCollectionViewCell.self,
+            forCellWithReuseIdentifier: ProductCollectionViewCell.identifier
         )
     }
     
@@ -69,9 +69,17 @@ extension ListProductsViewController: UICollectionViewDataSource, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        cell.backgroundColor = .blue
-        return cell    }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCollectionViewCell.identifier, for: indexPath) as! ProductCollectionViewCell
+        cell.setupContent(
+            with: Product(
+                id: "",
+                name: "hello",
+                price: 12,
+                imageURL: nil
+            )
+        )
+        return cell
+    }
     
     // MARK: - UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
