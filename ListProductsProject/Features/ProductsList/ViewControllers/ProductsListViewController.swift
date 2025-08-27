@@ -45,6 +45,8 @@ class ProductsListViewController: UIViewController {
         setupConstraints()
         setupCollectionViewManager()
         setupCollectionView()
+        
+        monitorConnectionLost()
     }
     
     // MARK: - Setup Views
@@ -94,6 +96,14 @@ class ProductsListViewController: UIViewController {
     private func setupViewModel() {
         viewModel.delegate = self
         viewModel.loadInitialProducts()
+    }
+    
+    private func monitorConnectionLost() {
+        // handle lost connection retry logic
+        NetworkConnectionListener.shared.setConnectionBackClosure { [weak self] in
+            guard let self else { return }
+            viewModel.loadMoreProductsIfPossible()
+        }
     }
     
 }
