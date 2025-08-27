@@ -49,7 +49,7 @@ class ProductsListViewController: UIViewController {
     
     // MARK: - Setup Views
     private func setupNavigationBar() {
-        title = "Products:"
+        title = "Products"
         navigationItem.rightBarButtonItem = switchLayoutButton
         navigationController?.navigationBar.prefersLargeTitles = true
     }
@@ -125,6 +125,11 @@ extension ProductsListViewController: ProductsCollectionViewManagerDelegate {
     
     func didReachEndOfScroll() {
         viewModel.loadMoreProductsIfPossible()
+    }
+    
+    func didSelectProduct(_ product: Product) {
+        let productDetailsVC = ProductDetailsViewController(product: product)
+        navigationController?.pushViewController(productDetailsVC, animated: true)
     }
     
 }

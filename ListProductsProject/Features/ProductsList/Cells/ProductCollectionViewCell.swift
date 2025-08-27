@@ -25,7 +25,10 @@ class ProductCollectionViewCell: UICollectionViewCell {
     
     private let productImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.backgroundColor = UIColor.systemGray6
         imageView.tintColor = .gray
+        imageView.layer.cornerRadius = 6
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView

@@ -9,6 +9,7 @@ import UIKit
 
 protocol ProductsCollectionViewManagerDelegate: AnyObject {
     func didReachEndOfScroll()
+    func didSelectProduct(_ product: Product)
 }
 
 class ProductsCollectionViewManager: NSObject {

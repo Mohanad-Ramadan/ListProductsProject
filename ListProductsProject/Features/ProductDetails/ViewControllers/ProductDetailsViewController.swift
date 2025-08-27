@@ -29,6 +29,7 @@ class ProductDetailsViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.backgroundColor = UIColor.systemGray6
+        imageView.tintColor = .gray
         imageView.layer.cornerRadius = 12
         imageView.clipsToBounds = true
         return imageView
@@ -148,7 +149,6 @@ class ProductDetailsViewController: UIViewController {
     // MARK: - UI Setup
     private func setupUI() {
         view.backgroundColor = UIColor.systemBackground
-        
         // Setup rating stack view
         ratingStackView.addArrangedSubview(starImageView)
         ratingStackView.addArrangedSubview(ratingLabel)
