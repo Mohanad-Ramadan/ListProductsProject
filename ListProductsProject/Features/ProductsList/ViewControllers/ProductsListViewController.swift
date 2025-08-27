@@ -95,15 +95,25 @@ class ProductsListViewController: UIViewController {
     
     private func setupViewModel() {
         viewModel.delegate = self
-        viewModel.loadInitialProducts()
+        viewModel.loadMoreProductsIfPossible()
     }
     
     private func monitorConnectionLost() {
-        // handle lost connection retry logic
-        NetworkConnectionListener.shared.setConnectionBackClosure { [weak self] in
-            guard let self else { return }
-            viewModel.loadMoreProductsIfPossible()
+        let networkListener = NetworkConnectionListener.shared
+        guard networkListener.isReachable else {
+            Toast.showError("No Internet Connection", in: self.view)
+            return
         }
+        
+        networkListener.setNetworkCallbacks(
+            restored: { [weak self] in
+                guard let self else { return }
+                viewModel.handleReloadProducts()
+            },
+            lost: { [weak self] in
+                guard let self else { return }
+                Toast.showError("No Internet Connection", in: self.view)
+        })
     }
     
 }
@@ -128,6 +138,14 @@ extension ProductsListViewController: ProductsListViewModelDelegate {
             self?.loadingIndicator.stopAnimating()
         }
     }
+    
+    func didFailLoadingProducts(withError error: String) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            Toast.showError(error, in: self.view)
+        }
+    }
+    
 }
 
 // MARK: - Products Manager Delegate

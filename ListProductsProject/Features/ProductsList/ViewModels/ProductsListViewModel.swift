@@ -11,6 +11,7 @@ protocol ProductsListViewModelDelegate: AnyObject {
     func didUpdateProducts()
     func didStartLoading()
     func didStopLoading()
+    func didFailLoadingProducts(withError error: String)
 }
 
 class ProductsListViewModel {
@@ -22,6 +23,7 @@ class ProductsListViewModel {
     private var currentPage = 0
     private var isLoadingMore = false
     private var hasMoreData = true
+    private var hasFailedRequest = false
     
     private(set) var products: [Product] = []
     
@@ -34,7 +36,6 @@ class ProductsListViewModel {
     
     //MARK: - Data Fetching
     func loadInitialProducts() {
-        resetPaginationState()
         loadProducts(isInitialLoad: true)
     }
     
@@ -42,11 +43,6 @@ class ProductsListViewModel {
         if !isLoadingMore && hasMoreData {
             loadProducts(isInitialLoad: false)
         }
-    }
-    
-    private func resetPaginationState() {
-        hasMoreData = true
-        currentPage = 0
     }
     
     private func loadProducts(isInitialLoad: Bool) {
@@ -65,8 +61,10 @@ class ProductsListViewModel {
                     allProducts: allProducts,
                     isInitialLoad: isInitialLoad
                 )
+                hasFailedRequest = false
             } catch {
-                print("error: \(error)")
+                hasFailedRequest = true
+                delegate?.didFailLoadingProducts(withError: error.localizedDescription)
             }
         }
     }
@@ -97,6 +95,14 @@ class ProductsListViewModel {
         isLoadingMore = false
         if !isInitialLoad {
             delegate?.didStopLoading()
+        }
+    }
+    
+    func handleReloadProducts() {
+        if products.isEmpty {
+            loadInitialProducts()
+        } else if hasFailedRequest {
+            loadMoreProductsIfPossible()
         }
     }
     

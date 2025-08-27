@@ -15,11 +15,11 @@ extension ProductsCollectionViewManager: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCollectionViewCell.identifier, for: indexPath) as! ProductCollectionViewCell
-        
         guard let product = viewModel?.products[indexPath.item] else {
             return cell
         }
         cell.setupContent(with: product)
+        cell.applyLayout(currentLayout)
         return cell
     }
 }

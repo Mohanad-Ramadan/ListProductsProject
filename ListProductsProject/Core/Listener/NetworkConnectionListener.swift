@@ -8,7 +8,7 @@
 import SystemConfiguration
 
 class NetworkConnectionListener {
-    var isReachable: Bool = false
+    var isReachable: Bool = true
     private var connectionRestoredCallback: (() -> Void)?
     private var connectionLostCallback: (() -> Void)?
     static let shared = NetworkConnectionListener()
@@ -50,23 +50,4 @@ class NetworkConnectionListener {
         connectionLostCallback = lost
         self.startMonitoring()
     }
-    
-    // MARK: - Testing Methods (for development only)
-    #if DEBUG
-    func simulateNetworkLoss() {
-        let wasReachable = isReachable
-        isReachable = false
-        if wasReachable {
-            connectionLostCallback?()
-        }
-    }
-    
-    func simulateNetworkRestoration() {
-        let wasReachable = isReachable
-        isReachable = true
-        if !wasReachable {
-            connectionRestoredCallback?()
-        }
-    }
-    #endif
 }
