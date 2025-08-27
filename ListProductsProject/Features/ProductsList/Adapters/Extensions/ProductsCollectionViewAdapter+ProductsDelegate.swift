@@ -11,8 +11,8 @@ import UIKit
 extension ProductsCollectionViewAdapter: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let product = products[indexPath.item]
-        print("Selected product: \(product.title)")
+        let product = viewModel?.products[indexPath.item]
+        print("Selected product: \(product?.title)")
     }
     
 }

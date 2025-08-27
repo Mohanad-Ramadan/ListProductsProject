@@ -12,7 +12,7 @@ protocol ProductsCollectionViewAdapterDelegate: AnyObject {
 }
 
 class ProductsCollectionViewAdapter: NSObject {
-    var products: [Product] = []
+    var viewModel: ProductsListViewModel?
     var currentLayout: LayoutType = .list
     weak var collectionView: UICollectionView?
     weak var delegate: ProductsCollectionViewAdapterDelegate?

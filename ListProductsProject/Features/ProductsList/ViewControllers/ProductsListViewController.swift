@@ -41,11 +41,10 @@ class ProductsListViewController: UIViewController {
         view.backgroundColor = .systemGroupedBackground
         
         setupNavigationBar()
+        setupViewModel()
         setupConstraints()
         setupCollectionViewManager()
         setupCollectionView()
-        
-        setupViewModel()
     }
     
     // MARK: - Setup Views
@@ -80,6 +79,7 @@ class ProductsListViewController: UIViewController {
     private func setupCollectionViewManager() {
         productsCollectionViewManager.collectionView = productsCollectionView
         productsCollectionViewManager.delegate = self
+        productsCollectionViewManager.viewModel = viewModel
     }
     
     private func setupCollectionView() {
@@ -102,11 +102,6 @@ class ProductsListViewController: UIViewController {
 extension ProductsListViewController: ProductsListViewModelDelegate {
     
     func didUpdateProducts() {
-        productsCollectionViewManager.updateProducts(
-            with: viewModel.products,
-            isInitialLoad: productsCollectionViewManager.products.isEmpty
-        )
-        
         DispatchQueue.main.async { [weak self] in
             self?.productsCollectionView.reloadData()
         }

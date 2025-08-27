@@ -61,9 +61,10 @@ class ProductsListViewModel {
             
             do {
                 let allProducts = try await fetchProducts(from: endpoint)
-                let newProducts = filterNewProducts(from: allProducts, isInitialLoad: isInitialLoad)
-                
-                updateProductsAndPagination(with: newProducts, allProducts: allProducts, isInitialLoad: isInitialLoad)
+                updateProductsAndPagination(
+                    allProducts: allProducts,
+                    isInitialLoad: isInitialLoad
+                )
             } catch {
                 print("error: \(error)")
             }
@@ -104,24 +105,26 @@ class ProductsListViewModel {
         from allProducts: [Product],
         isInitialLoad: Bool
     ) -> [Product] {
-        if isInitialLoad {
+        guard !isInitialLoad else {
             return allProducts
         }
-        
-        // Get all existing product IDs to avoid duplicates
+
         let existingIds = Set(products.map { $0.id })
-        
-        // Filter out products that we already have
         return allProducts.filter { !existingIds.contains($0.id) }
     }
     
     private func updateProductsAndPagination(
-        with newProducts: [Product],
         allProducts: [Product],
         isInitialLoad: Bool
     ) {
         // update pagination state
         currentPage += 1
+        
+        let newProducts = filterNewProducts(
+            from: allProducts,
+            isInitialLoad: isInitialLoad
+        )
+        print("newProducts: \(newProducts)")
         
         let currentLimit = initialPageCount * Int(pow(2.0, Double(currentPage - 1)))
         hasMoreData = newProducts.count > 0 && allProducts.count == currentLimit
