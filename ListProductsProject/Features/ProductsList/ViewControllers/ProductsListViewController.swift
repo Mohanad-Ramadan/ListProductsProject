@@ -33,22 +33,19 @@ class ProductsListViewController: UIViewController {
     }()
     
     private var productsCollectionViewManager = ProductsCollectionViewAdapter()
-    private let apiProvider: APIProtocol = APIClient()
-    
-    private let productsPageCount = 7
-    private var isLoadingMore = false
-    private var hasMoreData = true
+    private let viewModel = ProductsListViewModel()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
+        
         setupNavigationBar()
         setupConstraints()
         setupCollectionViewManager()
         setupCollectionView()
-        setupNavigationBar()
-        loadInitialProductsList()
+        
+        setupViewModel()
     }
     
     // MARK: - Setup Views
@@ -94,56 +91,45 @@ class ProductsListViewController: UIViewController {
         )
     }
     
-    // MARK: - Data Loading
-    private func loadInitialProductsList() {
-        hasMoreData = true
-        loadProducts(isInitialLoad: true)
-    }
-    
-    private func loadProducts(isInitialLoad: Bool = false) {
-        guard !isLoadingMore && (isInitialLoad || hasMoreData) else { return }
-        
-        isLoadingMore = true
-        if !isInitialLoad {
-            loadingIndicator.startAnimating()
-        }
-        let endpoint = APIEndpoint.getProducts(limit: productsPageCount)
-        
-        Task {
-            defer {
-                isLoadingMore = false
-                if !isInitialLoad {
-                    loadingIndicator.stopAnimating()
-                }
-            }
-            
-            do {
-                let fetchedProducts = try await apiProvider.request(endpoint: endpoint, responseModel: [ProductModel].self)
-                let products = fetchedProducts.map { Product(from: $0) }
-                
-                productsCollectionViewManager.updateProducts(
-                    with: products,
-                    isInitialLoad: isInitialLoad
-                )
-                
-                self.hasMoreData = products.count == self.productsPageCount
-                
-                self.productsCollectionView.reloadData()
-            } catch {
-                print("Error loading products: \(error)")
-            }
-        }
+    private func setupViewModel() {
+        viewModel.delegate = self
+        viewModel.loadInitialProducts()
     }
     
 }
 
+// MARK: - ProductsListViewModelDelegate
+extension ProductsListViewController: ProductsListViewModelDelegate {
+    
+    func didUpdateProducts() {
+        productsCollectionViewManager.updateProducts(
+            with: viewModel.products,
+            isInitialLoad: productsCollectionViewManager.products.isEmpty
+        )
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.productsCollectionView.reloadData()
+        }
+    }
+    
+    func didStartLoading() {
+        DispatchQueue.main.async { [weak self] in
+            self?.loadingIndicator.startAnimating()
+        }
+    }
+    
+    func didStopLoading() {
+        DispatchQueue.main.async { [weak self] in
+            self?.loadingIndicator.stopAnimating()
+        }
+    }
+}
+
 // MARK: - ProductsCollectionViewAdapterDelegate
 extension ProductsListViewController: ProductsCollectionViewAdapterDelegate {
-
+    
     func didReachEndOfScroll() {
-        if !isLoadingMore && hasMoreData {
-            loadProducts()
-        }
+        viewModel.loadMoreProductsIfPossible()
     }
     
 }
