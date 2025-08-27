@@ -14,7 +14,7 @@ enum LayoutType {
 }
 
 //MARK: - Switch Layout Logic
-extension ProductsCollectionViewAdapter {
+extension ProductsCollectionViewManager {
     
     func switchLayout() {
         guard let collectionView = collectionView else { return }
@@ -62,7 +62,7 @@ extension ProductsCollectionViewAdapter {
 }
 
 //MARK: - FlowLayout Delegate
-extension ProductsCollectionViewAdapter: UICollectionViewDelegateFlowLayout {
+extension ProductsCollectionViewManager: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.bounds.width

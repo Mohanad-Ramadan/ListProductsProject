@@ -32,7 +32,7 @@ class ProductsListViewController: UIViewController {
         return indicator
     }()
     
-    private var productsCollectionViewManager = ProductsCollectionViewAdapter()
+    private var productsCollectionViewManager = ProductsCollectionViewManager()
     private let viewModel = ProductsListViewModel()
     
     // MARK: - Lifecycle
@@ -98,7 +98,7 @@ class ProductsListViewController: UIViewController {
     
 }
 
-// MARK: - ProductsListViewModelDelegate
+// MARK: - ViewModel Delegate
 extension ProductsListViewController: ProductsListViewModelDelegate {
     
     func didUpdateProducts() {
@@ -120,8 +120,8 @@ extension ProductsListViewController: ProductsListViewModelDelegate {
     }
 }
 
-// MARK: - ProductsCollectionViewAdapterDelegate
-extension ProductsListViewController: ProductsCollectionViewAdapterDelegate {
+// MARK: - Products Manager Delegate
+extension ProductsListViewController: ProductsCollectionViewManagerDelegate {
     
     func didReachEndOfScroll() {
         viewModel.loadMoreProductsIfPossible()

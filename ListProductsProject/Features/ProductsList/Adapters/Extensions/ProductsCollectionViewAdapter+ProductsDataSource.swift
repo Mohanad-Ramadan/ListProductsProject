@@ -8,7 +8,7 @@
 import UIKit
 
 //MARK: - DataSource Delegate
-extension ProductsCollectionViewAdapter: UICollectionViewDataSource {
+extension ProductsCollectionViewManager: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel?.products.count ?? 0
     }

@@ -8,7 +8,7 @@
 import UIKit
 
 //MARK: - CollectionView Delegate
-extension ProductsCollectionViewAdapter: UICollectionViewDelegate {
+extension ProductsCollectionViewManager: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let product = viewModel?.products[indexPath.item]
@@ -18,7 +18,7 @@ extension ProductsCollectionViewAdapter: UICollectionViewDelegate {
 }
 
 // MARK: - Scroll Delegate
-extension ProductsCollectionViewAdapter: UIScrollViewDelegate {
+extension ProductsCollectionViewManager: UIScrollViewDelegate {
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let offsetY = scrollView.contentOffset.y
