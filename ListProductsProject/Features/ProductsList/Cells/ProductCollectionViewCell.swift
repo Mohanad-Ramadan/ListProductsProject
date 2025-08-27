@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ProductCollectionViewCell: UICollectionViewCell {
     
@@ -24,10 +25,8 @@ class ProductCollectionViewCell: UICollectionViewCell {
     
     private let productImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
+        imageView.tintColor = .gray
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 6
-        imageView.backgroundColor = .systemGray5
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -112,7 +111,16 @@ class ProductCollectionViewCell: UICollectionViewCell {
     func setupContent(with product: Product) {
         nameLabel.text = product.title
         priceLabel.text = String(format: "$%.2f", product.price)
-        productImageView.image = UIImage(systemName: "photo")
+        processProductImage(urlString: product.imageURL)
+    }
+    
+    private func processProductImage(urlString: String?) {
+        KF.url(URL(string: urlString ?? ""))
+            .placeholder(UIImage(systemName: "photo"))
+            .loadDiskFileSynchronously()
+            .cacheMemoryOnly()
+            .fade(duration: 0.25)
+            .set(to: productImageView)
     }
     
 }

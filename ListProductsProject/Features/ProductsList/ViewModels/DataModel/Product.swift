@@ -22,7 +22,7 @@ struct Product {
         self.price = data.price ?? 0.0
         self.description = data.description ?? "N/A"
         self.category = data.category ?? "N/A"
-        self.imageURL = data.imageURL
+        self.imageURL = data.image
         self.rating = data.rating
     }
 }
