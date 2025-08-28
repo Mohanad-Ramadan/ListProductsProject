@@ -51,7 +51,7 @@ class ProductDetailsViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 28, weight: .heavy)
-        label.textColor = UIColor.systemGreen
+        label.textColor = UIColor.systemBlue
         label.textAlignment = .left
         return label
     }()

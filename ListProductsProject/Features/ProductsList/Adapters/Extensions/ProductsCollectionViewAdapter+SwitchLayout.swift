@@ -37,11 +37,11 @@ extension ProductsCollectionViewManager: UICollectionViewDelegateFlowLayout {
         switch currentLayout {
         case .grid:
             let minimumSpacing: CGFloat = 10
-            let avatarsRowWidth = width - padding*2 - minimumSpacing*2
+            let avatarsRowWidth = width - padding - minimumSpacing
             let itemWidth = avatarsRowWidth / 3
-            return CGSize(width: itemWidth, height: itemWidth + 40)
+            return CGSize(width: itemWidth, height: itemWidth + 50)
         case .list:
-            return CGSize(width: width - padding*2, height: 100)
+            return CGSize(width: width - padding*2, height: 125)
         }
     }
     
@@ -55,16 +55,11 @@ extension ProductsCollectionViewManager: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        switch currentLayout {
-        case .grid:
-            return 10
-        case .list:
-            return 0
-        }
+        return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let padding: CGFloat = 12
+        let padding: CGFloat = 10
         return UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
     }
 }
