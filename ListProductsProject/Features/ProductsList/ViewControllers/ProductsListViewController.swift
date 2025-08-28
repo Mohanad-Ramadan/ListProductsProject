@@ -10,6 +10,8 @@ import UIKit
 class ProductsListViewController: UIViewController {
     
     // MARK: Properties
+    private lazy var skeletonView = ProductsListSkeletonView()
+    
     private lazy var switchLayoutButton = UIBarButtonItem(
         image: UIImage(systemName: "square.grid.2x2"),
         style: .plain,
@@ -38,15 +40,18 @@ class ProductsListViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = .systemGroupedBackground
         
         setupNavigationBar()
-        setupViewModel()
+        setupSubviews()
         setupConstraints()
+        
+        setupViewModel()
         setupCollectionViewManager()
         setupCollectionView()
         
-        monitorConnectionLost()
+        monitorNetworkConnection()
     }
     
     // MARK: - Setup Views
@@ -63,10 +68,28 @@ class ProductsListViewController: UIViewController {
         navigationItem.rightBarButtonItem?.image = UIImage(systemName: buttonImage)
     }
     
-    private func setupConstraints() {
+    private func setupSubviews() {
         view.addSubview(productsCollectionView)
         view.addSubview(loadingIndicator)
-        
+        setupSkeletonView()
+    }
+    
+    private func setupSkeletonView() {
+        addChild(skeletonView)
+        productsCollectionView.addSubview(skeletonView.view)
+        skeletonView.didMove(toParent: self)
+        skeletonView.view.translatesAutoresizingMaskIntoConstraints = false
+        skeletonView.view.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+    }
+    
+    func removeSkeletonView() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
+            self?.skeletonView.view.removeFromSuperview()
+            self?.skeletonView.didMove(toParent: nil)
+        }
+    }
+
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
             productsCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             productsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -98,7 +121,7 @@ class ProductsListViewController: UIViewController {
         viewModel.loadMoreProductsIfPossible()
     }
     
-    private func monitorConnectionLost() {
+    private func monitorNetworkConnection() {
         let networkListener = NetworkConnectionListener.shared
         guard networkListener.isReachable else {
             Toast.showError("No Internet Connection", in: self.view)
@@ -124,6 +147,7 @@ extension ProductsListViewController: ProductsListViewModelDelegate {
     func didUpdateProducts() {
         DispatchQueue.main.async { [weak self] in
             self?.productsCollectionView.reloadData()
+            self?.removeSkeletonView()
         }
     }
     
