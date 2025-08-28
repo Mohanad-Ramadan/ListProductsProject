@@ -13,9 +13,9 @@ class ProductCollectionViewCell: UICollectionViewCell {
     // MARK: - Properties
     static let identifier = "ProductCollectionViewCell"
     
-    private let containerView: UIView = {
+    private lazy var containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .secondarySystemBackground
         view.layer.cornerRadius = 16
         view.layer.shadowColor = UIColor.black.cgColor
         view.layer.shadowOffset = CGSize(width: 0, height: 6)
@@ -25,20 +25,26 @@ class ProductCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    private let productImageView: UIImageView = {
+    private lazy var imageContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 12
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor.systemGray5.cgColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var productImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = .systemGray6
+        imageView.contentMode = .scaleAspectFit
+        imageView.backgroundColor = .clear
         imageView.tintColor = .systemGray3
-        imageView.layer.cornerRadius = 12
-        imageView.clipsToBounds = true
-        imageView.layer.borderWidth = 1
-        imageView.layer.borderColor = UIColor.systemGray4.cgColor
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         label.textColor = .label
@@ -48,7 +54,7 @@ class ProductCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    private let priceLabel: UILabel = {
+    private lazy var priceLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         label.textColor = .systemBlue
@@ -57,7 +63,7 @@ class ProductCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    private let categoryLabel: UILabel = {
+    private lazy var categoryLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textColor = .secondaryLabel
@@ -66,7 +72,7 @@ class ProductCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    private let contentStackView: UIStackView = {
+    private lazy var contentStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = 4
@@ -76,15 +82,15 @@ class ProductCollectionViewCell: UICollectionViewCell {
         return stack
     }()
     
-    private let ratingContainer: UIView = {
+    private lazy var ratingContainer: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 10
-        view.backgroundColor = .systemGray6
+        view.backgroundColor = .systemGray5
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    private let ratingLabel: UILabel = {
+    private lazy var ratingLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 11, weight: .bold)
         label.textColor = UIColor.secondaryLabel
@@ -92,7 +98,7 @@ class ProductCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    private let starImageView: UIImageView = {
+    private lazy var starImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "star.fill")
         imageView.tintColor = UIColor.systemYellow
@@ -102,8 +108,8 @@ class ProductCollectionViewCell: UICollectionViewCell {
     }()
     
     // Layout constraints
-    private var gridConstraints: [NSLayoutConstraint] = []
-    private var listConstraints: [NSLayoutConstraint] = []
+    private lazy var gridConstraints: [NSLayoutConstraint] = []
+    private lazy var listConstraints: [NSLayoutConstraint] = []
     private var currentAppliedLayout: LayoutType?
     
     // MARK: - Lifecycle
@@ -135,7 +141,8 @@ class ProductCollectionViewCell: UICollectionViewCell {
     
     private func setupSubviews() {
         contentView.addSubview(containerView)
-        containerView.addSubview(productImageView)
+        containerView.addSubview(imageContainerView)
+        imageContainerView.addSubview(productImageView)
         containerView.addSubview(contentStackView)
         containerView.addSubview(ratingContainer)
         
@@ -165,20 +172,26 @@ class ProductCollectionViewCell: UICollectionViewCell {
             ratingLabel.centerYAnchor.constraint(equalTo: ratingContainer.centerYAnchor)
         ])
         
-        // Fixed image size
+        // Fixed image container size
         NSLayoutConstraint.activate([
-            productImageView.widthAnchor.constraint(equalToConstant: 80),
-            productImageView.heightAnchor.constraint(equalToConstant: 80),
+            imageContainerView.widthAnchor.constraint(equalToConstant: 80),
+            imageContainerView.heightAnchor.constraint(equalToConstant: 80),
+            
+            // Add padding around the image within the container
+            productImageView.topAnchor.constraint(equalTo: imageContainerView.topAnchor, constant: 8),
+            productImageView.leadingAnchor.constraint(equalTo: imageContainerView.leadingAnchor, constant: 8),
+            productImageView.trailingAnchor.constraint(equalTo: imageContainerView.trailingAnchor, constant: -8),
+            productImageView.bottomAnchor.constraint(equalTo: imageContainerView.bottomAnchor, constant: -8)
         ])
         
         // Grid layout constraints
         gridConstraints = [
-            // Product image
-            productImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 12),
-            productImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            // Product image container
+            imageContainerView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 12),
+            imageContainerView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             
             // Content stack view
-            contentStackView.topAnchor.constraint(equalTo: productImageView.bottomAnchor, constant: 12),
+            contentStackView.topAnchor.constraint(equalTo: imageContainerView.bottomAnchor, constant: 12),
             contentStackView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             contentStackView.leadingAnchor.constraint(greaterThanOrEqualTo: containerView.leadingAnchor, constant: 8),
             contentStackView.trailingAnchor.constraint(lessThanOrEqualTo: containerView.trailingAnchor, constant: -8),
@@ -193,14 +206,14 @@ class ProductCollectionViewCell: UICollectionViewCell {
         
         // List layout constraints
         listConstraints = [
-            // Product image
-            productImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
-            productImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            // Product image container
+            imageContainerView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
+            imageContainerView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             
             // Content stack view
-            contentStackView.leadingAnchor.constraint(equalTo: productImageView.trailingAnchor, constant: 12),
+            contentStackView.leadingAnchor.constraint(equalTo: imageContainerView.trailingAnchor, constant: 12),
             contentStackView.trailingAnchor.constraint(equalTo: ratingContainer.leadingAnchor, constant: -12),
-            contentStackView.topAnchor.constraint(equalTo: productImageView.topAnchor),
+            contentStackView.topAnchor.constraint(equalTo: imageContainerView.topAnchor),
             contentStackView.bottomAnchor.constraint(lessThanOrEqualTo: containerView.bottomAnchor, constant: -12),
             
             // Rating container

@@ -28,7 +28,7 @@ class ProductDetailsViewController: UIViewController {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.backgroundColor = UIColor.systemGray6
+        imageView.backgroundColor = .white
         imageView.tintColor = .gray
         imageView.layer.cornerRadius = 12
         imageView.clipsToBounds = true
