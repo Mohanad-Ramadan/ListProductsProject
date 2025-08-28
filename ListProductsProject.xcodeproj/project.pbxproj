@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		144FDC5C2E5E89E0003DAD04 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 144FDC5B2E5E89E0003DAD04 /* Kingfisher */; };
+		14FFE76D2E6004EE00663926 /* SkeletonView in Frameworks */ = {isa = PBXBuildFile; productRef = 14FFE76C2E6004EE00663926 /* SkeletonView */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14FFE76D2E6004EE00663926 /* SkeletonView in Frameworks */,
 				144FDC5C2E5E89E0003DAD04 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -131,6 +133,7 @@
 			name = ListProductsProject;
 			packageProductDependencies = (
 				144FDC5B2E5E89E0003DAD04 /* Kingfisher */,
+				14FFE76C2E6004EE00663926 /* SkeletonView */,
 			);
 			productName = ListProductsProject;
 			productReference = 14EED5B52E5DFC5A0010E942 /* ListProductsProject.app */;
@@ -216,6 +219,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				144FDC5A2E5E89E0003DAD04 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				14FFE76B2E6004EE00663926 /* XCRemoteSwiftPackageReference "SkeletonView" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 14EED5B62E5DFC5A0010E942 /* Products */;
@@ -592,6 +596,14 @@
 				minimumVersion = 8.5.0;
 			};
 		};
+		14FFE76B2E6004EE00663926 /* XCRemoteSwiftPackageReference "SkeletonView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Juanpe/SkeletonView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.31.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -599,6 +611,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 144FDC5A2E5E89E0003DAD04 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		14FFE76C2E6004EE00663926 /* SkeletonView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 14FFE76B2E6004EE00663926 /* XCRemoteSwiftPackageReference "SkeletonView" */;
+			productName = SkeletonView;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
